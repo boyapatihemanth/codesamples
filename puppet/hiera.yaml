@@ -1,0 +1,16 @@
+---
+version: 5
+
+defaults:
+  datadir: "data"
+
+hierarchy:
+  - name: "Per-node data(yaml version)"
+    data_hash: yaml_data # std yaml backend
+    path: "nodes/%{hostname}.yaml"
+
+  - name: "Other Yaml hierarchy levels"
+    data_hash: yaml_data # std yaml backend
+    paths:
+      - "roles/%{roles}.yaml"
+      - "common.yaml"
