@@ -1,0 +1,10 @@
+forge 'https://forge.puppet.com'
+
+mod 'puppetlabs-powershell'
+mod 'puppetlabs-stdlib'
+mod 'badgerious-windows_env'
+mod 'reidmv-unzip'
+mod 'puppet-windowsfeature'
+
+# mod 'dummy-dummy'
+#  :git => "https://git/url/dummy-dummy.git"
