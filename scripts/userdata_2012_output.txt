@@ -1,0 +1,42 @@
+<powershell>
+
+$EventLog = @{
+LogName = "System"
+Source = "UserData"
+EntryType = "Information"
+Category = 0
+}
+
+$Enableuserdata = {
+  $EC2SettingsFile = "C:\Program Files\Amazon\EC2ConfigService\Settings\Config.xml"
+  $xml = [xml](Get-Content $EC2SettingsFile)
+  $xmlElement = $xml.get_DocumentElement()
+  $xmlElementToModify = $xmlElement.Plugins
+  foreach ($element in $xmlElementToModify.Plugin) {
+    if ($element.name -eq "Ec2EventLog") {
+      $element.State = "Enabled"
+    }
+  }
+  $xml.Save($EC2SettingsFile)
+}
+
+Invoke-Command -ScriptBlock $Enableuserdata
+
+$EC2EventLogConfig = "C:\Program Files\Amazon\EC2ConfigService\Settings\EventLogConfig.xml"
+$elxml = [xml](Get-Content $EC2EventLogConfig)
+$elxmlElement = $elxml.get_DocumentElement()
+$elxmlElementToModify = $elxmlElement.Event
+$elxmlElementToModify.Category = "System"
+$elxmlElementToModify.AppName = "UserData"
+$elxmlElementToModify.ErrorType = "Information"
+$elxmlElementToModify.NumEntries = "11"
+$elxml.Save($EC2EventLogConfig)
+
+if(!(Get-EventLog -LogName System -Source "UserData" -Newest 1 -ErrorAction SilentlyContinue)) {
+  New-EventLog -LogName System -Source "UserData"
+}
+
+Write-EventLog -Message "TEST LOG 1" @EventLog -EventID 25247
+Write-EventLog -Message "TEST LOG 2" @EventLog -EventID 25249
+
+</powershell>
