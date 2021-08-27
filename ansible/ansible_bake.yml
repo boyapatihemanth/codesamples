@@ -1,0 +1,31 @@
+- name: Configure microservice base AMI
+  hosts: localhost
+  connection: local
+  become: true
+  vars_files:
+    - vars/consul
+    - vars/all
+
+  roles:
+    - roles/java-install
+    - roles/tomcat
+
+  tasks:
+    - name: install python pypi pkgs
+      pip:
+        name:
+          - netaddr
+          - ipaddr
+          - PyJWT==1.7.1
+        executable: pip
+    - name: download and install beats
+      include_role:
+        name: roles/filebeat
+        tasks_from: install
+    - name: configure base app
+      include_role:
+        name: roles/spring-boot
+        tasks_from: '{{ item }}'
+      loop:
+        #- configure_app
+        - configure_firewall

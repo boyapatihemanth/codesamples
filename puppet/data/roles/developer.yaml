@@ -1,0 +1,90 @@
+---
+classes:
+  - 'roles::developer'
+
+developer::file::url:
+  :jdk.exe: <url to download>
+  :7zip.exe: <url to download>
+  :npp.exe: <url to download>
+  :python27.msi: <url to download>
+  :awscli.msi: <url to download>
+  :pycharm.exe: <url to download>
+  :terraform.exe: <url to download>
+  :packer.exe: <url to download>
+  :rdcman.msi: <url to download>
+  :gitextension.msi: <url to download>
+  :winscp.exe: <url to download>
+  :putty.msi: <url to download>
+
+developer::zip::url:
+  :curl.zip: <url to download>
+  :vscode.zip: <url to download>
+
+developer::install::packages:
+  'notepad plus plus':
+    ensure: 'installed'
+    source: 'c:/puppet/npp.exe'
+    install_options: [ "/S" ]
+  '7 zip':
+    ensure: 'installed'
+    source: 'c:/puppet/7zip.exe'
+    install_options: [ "/S" ]
+  'java':
+    ensure: 'installed'
+    source: 'c:/puppet/jdk.exe'
+    install_options: [ '/s' ]
+  'python':
+    ensure: 'installed'
+    source: 'c:/puppet/python27.msi'
+    install_options: [ '/passive', 'INSTALLDIR=C:\\python27', 'ALLUSERS=1', 'ADDLOCAL=ALL' ]
+  'aws cli':
+    ensure: 'installed'
+    source: 'c:/puppet/awscli.msi'
+    install_options: [ '/qn' ]
+  'remote desktop manager':
+    ensure: 'installed'
+    source: 'c:/puppet/rdcman.msi'
+    install_options: [ '/qn' ]
+  'git extension':
+    ensure: 'installed'
+    source: 'c:/puppet/gitextension.msi'
+    install_options: [ '/quiet', '/norestart' ]
+  'pycharm':
+    ensure: 'installed'
+    source: 'c:/puppet/pycharm.exe'
+    install_options: [ '/S' ]
+  'winscp':
+    ensure: 'installed'
+    source: 'c:/puppet/winscp.exe'
+    install_options: [ '/SILENT', '/NORESTART' ]
+  'putty':
+    ensure: 'installed'
+    source: 'c:/puppet/putty.msi'
+    install_options: [ '/qn' ]
+
+developer::postinstall::path:
+  'hashicorp home':
+    ensure: 'present'
+    variable: 'HASHICORP_HOME'
+    value: 'C:\puppet'
+    mergemode: 'clobber'
+  'java home':
+    ensure: 'present'
+    variable: 'JAVA_HOME'
+    value: 'C:\Program Files\Java\jdk1.8.0_201' # Will vary
+    mergemode: 'clobber'
+  'python home':
+    ensure: 'present'
+    variable: 'PYTHON_HOME'
+    value: 'C:\python27'
+    mergemode: 'clobber'
+  'curl home':
+    ensure: 'present'
+    variable: 'CURL_HOME'
+    value: 'C:\puppet\curl\winssl'
+    mergemode: 'clobber'
+  'Path':
+    ensure: 'present'
+    variable: 'PATH'
+    value: '%HASHICORP_HOME%;%JAVA_HOME%\bin;%PYTHON_HOME%\;%PYTHON_HOME%\Scripts;%CURL_HOME%;'
+    mergemode: 'append'
