@@ -1,0 +1,22 @@
+{
+  "prod": {
+    "admin": {
+      "account": "615547054056",
+      "role": "deployer"
+    },
+    "s3": {
+      "account": "615547054056",
+      "role": "s3deployer"
+    }
+  },
+  "nonprod": {
+    "admin-deployer": {
+      "account": "",
+      "role": ""
+    },
+    "s3-deployer": {
+      "account": "",
+      "role": ""
+    }
+  }
+}
