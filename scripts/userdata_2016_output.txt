@@ -1,0 +1,24 @@
+<powershell>
+
+$EventLog = @{
+LogName = "System"
+Source = "UserData"
+EntryType = "Information"
+Category = 0
+}
+
+Set-Content -Value '{"events": [ { "logName": "System", "source": "UserData", "level": "Information", "numEntries": 11 } ] }' "C:\ProgramData\Amazon\EC2-Windows\Launch\Config\EventLogConfig.json"
+
+C:\ProgramData\Amazon\EC2-Windows\Launch\Scripts\SendEventLogs.ps1 -Schedule
+
+if(!(Get-EventLog -LogName System -Source "UserData" -Newest 1 -ErrorAction SilentlyContinue)) {
+  New-EventLog -LogName System -Source "UserData"
+}
+
+Write-EventLog -Message "TEST LOG 1" @EventLog -EventID 25247
+Write-EventLog -Message "TEST LOG 2" @EventLog -EventID 25249
+
+</powershell>
+<persist>true</persist>
+
+
