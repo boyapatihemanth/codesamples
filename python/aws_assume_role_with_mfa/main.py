@@ -75,7 +75,7 @@ if __name__=="__main__":
     print(roles_list)
     role = input().strip()
     # Need To work on validations of environment and role values entered
-    
+
     account=data[environment][role]['account']
     role=data[environment][role]['role']
     arn_prefix = "arn:aws:iam::"
