@@ -29,11 +29,12 @@ def get_available_roles():
         env_roles_didct[environment] = roles_list
     return env_roles_didct
 
-def assume_role(role_arn, role, tokenCode):
+def assume_role(role_arn, role, duration, tokenCode):
     try:
         response = client.assume_role(
             RoleArn=role_arn,
             RoleSessionName=role,
+            DurationSeconds = duration,
             SerialNumber="arn:aws:iam::589796708521:mfa/bh-localmacuser-deployer",
             TokenCode=tokenCode
         )
@@ -61,12 +62,15 @@ def edit_credentials_file(aws_access_key_id,aws_secret_access_key, aws_session_t
         with open(AWS_CONFIG_FILE, 'w') as configfile:
             config.write(configfile)
         print("Config file edited")
-        
+
+
 @click.command()
 @click.option('--environment', '-e', prompt='Environment', help='Accepts environment from: '+str(get_environments()))
 @click.option('--role', '-r', prompt='Role', help='Accepts role from: '+str(get_available_roles()))
+@click.option('--duration', '-d', default=3600, prompt='Duration', help='Enter duration in seconds, defaults to 3600, min is 900, max value is as per the role setting')
 @click.option('--token_code', '-t', prompt='Token_code', help='Accepts MFA OTP')
-def main(environment, role, token_code):
+
+def main(environment, role, duration, token_code):
     account = data[environment][role]['account']
     role = data[environment][role]['role']
     arn_prefix = "arn:aws:iam::"
@@ -74,12 +78,14 @@ def main(environment, role, token_code):
     role_arn = arn_prefix + account + role_prefix + role
     print("Role to be Assumed is :" + role_arn)
     try:
-        aws_access_key_id, aws_secret_access_key, aws_session_token = assume_role(role_arn, role, token_code)
+        aws_access_key_id, aws_secret_access_key, aws_session_token = assume_role(role_arn, role, duration, token_code)
     except:
         print("Assume Role failed")
     else:
 
         edit_credentials_file(aws_access_key_id, aws_secret_access_key, aws_session_token)
+
+
 
 if __name__=="__main__":
     main()
